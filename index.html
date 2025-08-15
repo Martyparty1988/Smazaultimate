@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
+    <!-- 1. Přidán viewport-fit=cover pro pokrytí bezpečné oblasti -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Najdi smažák ultimate</title>
     
@@ -154,41 +155,85 @@
             --glow-yellow: rgba(250, 204, 21, 0.4); --glow-red: rgba(248, 113, 113, 0.5);
             --scanner-grid: rgba(74, 222, 128, 0.15);
         }
-        /* FIX: Set a fallback background color on the html element */
-        html {
-            background-color: var(--bg-gradient-start);
-        }
+        
+        /* 2. Nastavení pro plnou výšku a šířku, bez okrajů */
         html, body {
-            height: 100%; width: 100%; margin: 0; padding: 0; overflow: hidden;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
         }
+        
+        /* 3. Padding pro safe areas a flexbox pro roztažení obsahu */
         body {
             font-family: 'Share Tech Mono', monospace;
             background: linear-gradient(160deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-        }
-        #app-container {
-            min-height: 100%;
-            height: 100%; 
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start; 
-            overflow-y: auto;
-            /* FIX: Apply padding here and ensure box-sizing is correct */
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
+        
+        /* 4. Úprava hlavního kontejneru pro flexibilní růst */
+        #app-container {
+            width: 100%;
+            min-height: 100%; /* Změněno z height na min-height */
+            display: flex;
+            flex-direction: column; /* Změněno pro správné zarovnání wrapperu */
+            align-items: center; /* Centrovaní obsahu horizontálně */
+            justify-content: flex-start; /* Zarovnání obsahu nahoru */
+            flex-grow: 1;
+            overflow-y: auto; /* Povolí skrolování, pokud je obsah větší */
+        }
+        
+        /* 5. Úprava wrapperu obsahu, aby správně fungoval v novém layoutu */
         #content-wrapper {
-            width: 100%; max-width: 480px; padding: 1rem; display: flex; flex-direction: column; gap: 1.25rem;
+            width: 100%;
+            max-width: 480px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            flex-shrink: 0; /* Zabrání smrštění obsahu */
         }
+
         #app-container::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><rect fill="%230f172a" width="800" height="800"/><g fill-opacity="0.1"><circle fill="%231e293b" cx="400" cy="400" r="600"/><circle fill="%230c4a6e" cx="400" cy="400" r="500"/><circle fill="%230f172a" cx="400" cy="400" r="300"/><circle fill="%231e293b" cx="400" cy="400" r="200"/><circle fill="%230c4a6e" cx="400" cy="400" r="100"/></g></svg>');
             opacity: 0.05; pointer-events: none; z-index: -1;
         }
-        h1, h2, h3, .font-orbitron { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px var(--glow-green); }
-        h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
+        
+        /* 7. Přidání obecných stylů pro texty a tlačítka */
+        h1, h2, h3 {
+            margin: 10px 0;
+            text-align: center;
+        }
+        p {
+            margin: 5px 0;
+            text-align: center;
+        }
+        /* Poznámka: Tyto styly mohou být přepsány specifičtějšími třídami z Tailwindu nebo vlastními styly (např. .btn) */
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Původní styly zůstávají zachovány pro vzhled aplikace */
+        h1.font-orbitron, h2, h3, .font-orbitron { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px var(--glow-green); }
+        h1.font-orbitron { font-size: clamp(1.5rem, 6vw, 2rem); }
         .glass-panel {
             background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border); border-radius: clamp(12px, 4vw, 16px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
@@ -260,6 +305,7 @@
     </style>
 </head>
 <body>
+    <!-- 6. Původní HTML struktura je zachována -->
     <div id="app-container">
         <div id="content-wrapper">
             
@@ -312,16 +358,16 @@
                 <ul id="activity-log" class="space-y-3 text-sm max-h-40 overflow-y-auto pr-2 hidden" aria-live="polite"></ul>
             </div>
         </div>
+    </div>
 
-        <div id="ai-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <div class="glass-panel w-full max-w-lg p-6 relative">
-                <button id="modal-close-button" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" aria-label="Zavřít okno">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
-                </button>
-                <h3 id="modal-title" class="font-orbitron text-xl mb-4 text-green-300"></h3>
-                <div id="modal-content" class="text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto"></div>
-                <div id="modal-loader" class="w-full flex justify-center items-center py-8 hidden"><div class="ai-modal-loader"></div></div>
-            </div>
+    <div id="ai-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="glass-panel w-full max-w-lg p-6 relative">
+            <button id="modal-close-button" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" aria-label="Zavřít okno">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+            </button>
+            <h3 id="modal-title" class="font-orbitron text-xl mb-4 text-green-300"></h3>
+            <div id="modal-content" class="text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto"></div>
+            <div id="modal-loader" class="w-full flex justify-center items-center py-8 hidden"><div class="ai-modal-loader"></div></div>
         </div>
     </div>
 
@@ -365,7 +411,7 @@
                 init: function() {
                     if (state.audioReady) return;
                     try {
-                        Tone.start(); // Ensure audio context is started on user interaction
+                        Tone.start(); // Required for audio context in modern browsers
                         this.synths.generic = new Tone.Synth({ oscillator: { type: 'fmsine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.1 } }).toDestination();
                         this.synths.noise = new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.005, decay: 0.05, sustain: 0 } }).toDestination();
                         this.synths.slehac = new Tone.PluckSynth({ attackNoise: 1, dampening: 4000, resonance: 0.7 }).toDestination();
@@ -423,55 +469,23 @@
             ];
 
             const extraPhrases = {
-                slehac: {
-                    toastPhrases: ['Čistota nad 80 %, leť.','Filtr čistý. Nezakecej.','Míchám to jak boží prst.','Teplota drží, nepřepal.','Vzorek stabilní. Plynule.','Syntéza v plným proudu.','Bez bublin, profi kvalita.','Mix jak od Michelina.','Krystal jak diamant.','Tlak drží – neměň nic.'],
-                    logPhrases: ['Zkumavka zpívá – čistý tón.','Mikro bubliny OK.','Měřák bliká zeleně.','Destilku dolít, ať to neškrábe.','Míchadlo v rytmu, drž tempo.','Povrch zrcadlo, bez puchýřů.','PH cajk, můžeme přitopit.','Vůně plastu mizí – dobrý signál.','Nálev bez kalu – paráda.','Laboratoř běží jak hodinky.','Tepelná křivka ideální.','Nic se nepřipaluje – top stav.']
-                },
-                hulic: {
-                    toastPhrases: ['Táhne to. Drž linku.','Popel si sedá, klid.','Sklo čistý – respekt.','Seshni to na špičku.','Vlhkej kašel? Voda, kámo.','Plamen hřeje akorát.','Táhni pomalu, ať to drží.','Chuť jak první láska.','Žár rovnoměrnej.','Popelník v limitu.'],
-                    logPhrases: ['Zapal z boku, ať to nefouká.','Filtr se nechytá – luxus.','Kruh jak vinyl, stará škola.','Sídlo prachu: podložka.','Nehroť tah, nech to dýchat.','Aroma citrus-beton. Mmm.','Plamen malý, úsporný mód.','Kouř čistej jak horskej vzduch.','Žár bez praskání.','Sklo se leskne jak nový.','Pocit lehkosti – ideál.','Šluk jak z učebnice.']
-                },
-                cichac: {
-                    toastPhrases: ['Hadr ready. Film běží.','Vdechni – nepřeháněj.','Profil drží, barvičky.','Víčko těsní, klídek.','Kanystr mlčí. Zatím.','Vůně se láme do sladka.','Vzduch má jiskru.','Film bez bublin.','Parfém továrny – deluxe.','Tlak voní stabilně.'],
-                    logPhrases: ['Vzduch se kroutí jak had.','Ticho v uších – jízda.','Stromek v autě? Ubohost.','Závan fabriky – nostalgie.','Čas gumovej. Přistávej pomalu.','Molekuly tančí ve spirále.','Nos brní, to je ono.','Filtr drží vůni pevně.','Hlavní aroma stabilní.','Lehká pachuť chemie – cajk.','Bublina času, nic se nehýbe.','Vzorek v limitu, můžeš jet.']
-                },
-                domingo: {
-                    toastPhrases: ['Předávka v tichu.','Kamera za rohem – bacha.','Balíček nenápadnej.','Okno otevřený minutu.','Čas jsou prachy.','Stín mě kryje.','Zóna čistá.','Pohyb minimální.','Kontakt potvrzen.','Stopy vymazány.'],
-                    logPhrases: ['Koridor čistý, jdeme.','Plášť šustí – signál.','Stopy smaž, když odcházíš.','Telefon do kapsy, teď.','Zpětná kontrola: nikdo za náma.','Vchod chráněn, klid.','Nabitý plán, jedeme dál.','Bez zbytečných slov.','Otočka za roh a pryč.','Klidná zóna, žádný svědci.','Doručeno bez komplikací.','Obálka v bezpečí.']
-                },
-                pedro: {
-                    toastPhrases: ['Brzdím. Brána?','Objížďka hotová.','Zvoním a mizím.','Expres režim.','Balík vakuuju.','Před domem za 2 minuty.','Parkuju vedle hydrantu.','Náklad drží pevně.','Bez zastávky – turbo.','Zatáčka a jsem tam.'],
-                    logPhrases: ['Byt vlevo, třetí zvonek.','Kolona na Barrandově – zpožďuju.','Parkuju u hydrantu, fofr.','V kufru to drží – žádný šust.','GPS hopsá, jsem blízko.','Světla zhasnutá, klidná příjezdovka.','Dodávka maskovaná v koloně.','Čas příjezdu přesnej na vteřinu.','Výjezd bez pozornosti okolí.','Doručeno a odjeto.','Zpoždění minimalizováno.','Trasa vyčištěná.']
-                },
-                chemik: {
-                    toastPhrases: ['Reakce stabilní.','Vzorek pod kontrolou.','Teplota drží ±0,1°C.','PH přesně v normě.','Analýza běží.','Bezpečný roztok připraven.','Testovací série dokončena.','Přesně odměřeno.','Vzorek čistý jako slovo Boží.','Laboratoř v zelených číslech.'],
-                    logPhrases: ['Titrační křivka perfektní.','Měření přesné na mikron.','Žádná sedimentace.','Odpar 0,02 % – ideál.','Spektrum bez šumu.','Záznam uložen do protokolu.','Reaktor stabilní.','Výsledek potvrzen duplikátem.','Kalibrace 100 %. Hotovo.','Čas do další reakce: 3 min.','Žádné odchylky nenalezeny.','Parametry v normě.']
-                },
-                dispecer: {
-                    toastPhrases: ['Trasa potvrzená.','Cíl v dosahu.','Další zastávka připravena.','Okno pro přesun otevřené.','Bezpečný koridor aktivní.','Příjezd podle plánu.','Všechny jednotky v pozici.','Synchronizace hotová.','Přesměrování bez zdržení.','Časová rezerva +2 min.'],
-                    logPhrases: ['Satelitní snímek ověřen.','Žádné překážky na trase.','Překresluju mapu pohybu.','Nový bod zájmu přidán.','Cílová zóna čistá.','Předávám souřadnice.','Radiový kontakt navázán.','Plán B připraven.','Synchronizace týmů dokončena.','Signál 100 %, spojení stabilní.','Časová osa aktualizována.','Bezpečný průchod potvrzen.']
-                }
+                slehac: { toastPhrases: ['Čistota nad 80 %, leť.','Filtr čistý. Nezakecej.','Míchám to jak boží prst.','Teplota drží, nepřepal.','Vzorek stabilní. Plynule.','Syntéza v plným proudu.','Bez bublin, profi kvalita.','Mix jak od Michelina.','Krystal jak diamant.','Tlak drží – neměň nic.'], logPhrases: ['Zkumavka zpívá – čistý tón.','Mikro bubliny OK.','Měřák bliká zeleně.','Destilku dolít, ať to neškrábe.','Míchadlo v rytmu, drž tempo.','Povrch zrcadlo, bez puchýřů.','PH cajk, můžeme přitopit.','Vůně plastu mizí – dobrý signál.','Nálev bez kalu – paráda.','Laboratoř běží jak hodinky.','Tepelná křivka ideální.','Nic se nepřipaluje – top stav.'] },
+                hulic: { toastPhrases: ['Táhne to. Drž linku.','Popel si sedá, klid.','Sklo čistý – respekt.','Seshni to na špičku.','Vlhkej kašel? Voda, kámo.','Plamen hřeje akorát.','Táhni pomalu, ať to drží.','Chuť jak první láska.','Žár rovnoměrnej.','Popelník v limitu.'], logPhrases: ['Zapal z boku, ať to nefouká.','Filtr se nechytá – luxus.','Kruh jak vinyl, stará škola.','Sídlo prachu: podložka.','Nehroť tah, nech to dýchat.','Aroma citrus-beton. Mmm.','Plamen malý, úsporný mód.','Kouř čistej jak horskej vzduch.','Žár bez praskání.','Sklo se leskne jak nový.','Pocit lehkosti – ideál.','Šluk jak z učebnice.'] },
+                cichac: { toastPhrases: ['Hadr ready. Film běží.','Vdechni – nepřeháněj.','Profil drží, barvičky.','Víčko těsní, klídek.','Kanystr mlčí. Zatím.','Vůně se láme do sladka.','Vzduch má jiskru.','Film bez bublin.','Parfém továrny – deluxe.','Tlak voní stabilně.'], logPhrases: ['Vzduch se kroutí jak had.','Ticho v uších – jízda.','Stromek v autě? Ubohost.','Závan fabriky – nostalgie.','Čas gumovej. Přistávej pomalu.','Molekuly tančí ve spirále.','Nos brní, to je ono.','Filtr drží vůni pevně.','Hlavní aroma stabilní.','Lehká pachuť chemie – cajk.','Bublina času, nic se nehýbe.','Vzorek v limitu, můžeš jet.'] },
+                domingo: { toastPhrases: ['Předávka v tichu.','Kamera za rohem – bacha.','Balíček nenápadnej.','Okno otevřený minutu.','Čas jsou prachy.','Stín mě kryje.','Zóna čistá.','Pohyb minimální.','Kontakt potvrzen.','Stopy vymazány.'], logPhrases: ['Koridor čistý, jdeme.','Plášť šustí – signál.','Stopy smaž, když odcházíš.','Telefon do kapsy, teď.','Zpětná kontrola: nikdo za náma.','Vchod chráněn, klid.','Nabitý plán, jedeme dál.','Bez zbytečných slov.','Otočka za roh a pryč.','Klidná zóna, žádný svědci.','Doručeno bez komplikací.','Obálka v bezpečí.'] },
+                pedro: { toastPhrases: ['Brzdím. Brána?','Objížďka hotová.','Zvoním a mizím.','Expres režim.','Balík vakuuju.','Před domem za 2 minuty.','Parkuju vedle hydrantu.','Náklad drží pevně.','Bez zastávky – turbo.','Zatáčka a jsem tam.'], logPhrases: ['Byt vlevo, třetí zvonek.','Kolona na Barrandově – zpožďuju.','Parkuju u hydrantu, fofr.','V kufru to drží – žádný šust.','GPS hopsá, jsem blízko.','Světla zhasnutá, klidná příjezdovka.','Dodávka maskovaná v koloně.','Čas příjezdu přesnej na vteřinu.','Výjezd bez pozornosti okolí.','Doručeno a odjeto.','Zpoždění minimalizováno.','Trasa vyčištěná.'] },
+                chemik: { toastPhrases: ['Reakce stabilní.','Vzorek pod kontrolou.','Teplota drží ±0,1°C.','PH přesně v normě.','Analýza běží.','Bezpečný roztok připraven.','Testovací série dokončena.','Přesně odměřeno.','Vzorek čistý jako slovo Boží.','Laboratoř v zelených číslech.'], logPhrases: ['Titrační křivka perfektní.','Měření přesné na mikron.','Žádná sedimentace.','Odpar 0,02 % – ideál.','Spektrum bez šumu.','Záznam uložen do protokolu.','Reaktor stabilní.','Výsledek potvrzen duplikátem.','Kalibrace 100 %. Hotovo.','Čas do další reakce: 3 min.','Žádné odchylky nenalezeny.','Parametry v normě.'] },
+                dispecer: { toastPhrases: ['Trasa potvrzená.','Cíl v dosahu.','Další zastávka připravena.','Okno pro přesun otevřené.','Bezpečný koridor aktivní.','Příjezd podle plánu.','Všechny jednotky v pozici.','Synchronizace hotová.','Přesměrování bez zdržení.','Časová rezerva +2 min.'], logPhrases: ['Satelitní snímek ověřen.','Žádné překážky na trase.','Překresluju mapu pohybu.','Nový bod zájmu přidán.','Cílová zóna čistá.','Předávám souřadnice.','Radiový kontakt navázán.','Plán B připraven.','Synchronizace týmů dokončena.','Signál 100 %, spojení stabilní.','Časová osa aktualizována.','Bezpečný průchod potvrzen.'] }
             };
 
             function mergePhrases(id, extra) {
                 const subject = state.subjects.find(s => s.id === id);
-                if (!subject) {
-                    console.warn(`Subject with id "${id}" not found.`);
-                    return;
-                }
-                if (extra.toastPhrases) {
-                    if (!subject.toastPhrases) subject.toastPhrases = [];
-                    subject.toastPhrases = subject.toastPhrases.concat(extra.toastPhrases);
-                }
-                if (extra.logPhrases) {
-                    if (!subject.logPhrases) subject.logPhrases = [];
-                    subject.logPhrases = subject.logPhrases.concat(extra.logPhrases);
-                }
+                if (!subject) { console.warn(`Subject with id "${id}" not found.`); return; }
+                if (extra.toastPhrases) { if (!subject.toastPhrases) subject.toastPhrases = []; subject.toastPhrases = subject.toastPhrases.concat(extra.toastPhrases); }
+                if (extra.logPhrases) { if (!subject.logPhrases) subject.logPhrases = []; subject.logPhrases = subject.logPhrases.concat(extra.logPhrases); }
             }
 
-            for (const id in extraPhrases) {
-                mergePhrases(id, extraPhrases[id]);
-            }
+            for (const id in extraPhrases) { mergePhrases(id, extraPhrases[id]); }
             
             const threatLevels = [
                 { name: 'Na pohodu, jen trošku sjetý', class: 'threat-low', level: 0 }, { name: 'Půl dávky v žíle', class: 'threat-medium', level: 1 },
