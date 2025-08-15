@@ -1,1 +1,756 @@
-<!DOCTYPE html> <html lang="cs"> <head>     <meta charset="UTF-8">     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">     <title>Najdi smažák ultimate</title>          <!-- PWA Icon and Manifest Generator -->     <script>         (function() {             // Function to draw the new "Smažený týpek" icon             function drawIcon(size, isMaskable = false) {                 const canvas = document.createElement('canvas');                 canvas.width = size;                 canvas.height = size;                 const ctx = canvas.getContext('2d');                 const scale = size / 512;                  // Background                 ctx.fillStyle = '#0a192f';                 ctx.fillRect(0, 0, size, size);                  const padding = isMaskable ? size * 0.1 : 0;                 const drawSize = size - padding * 2;                 const cX = size / 2;                 const cY = size / 2;                  // Head (the "smažák")                 ctx.save();                 ctx.translate(cX, cY);                 ctx.rotate(-10 * Math.PI / 180);                  const headWidth = drawSize * 0.7;                 const headHeight = drawSize * 0.8;                  // Breadcrumbs texture                 const textureCanvas = document.createElement('canvas');                 textureCanvas.width = size;                 textureCanvas.height = size;                 const texCtx = textureCanvas.getContext('2d');                 texCtx.fillStyle = '#d4a97a'; // Lighter breadcrumb                 texCtx.fillRect(0, 0, size, size);                 for (let i = 0; i < 5000 * (scale*scale); i++) {                     texCtx.fillStyle = `rgba(160, 110, 60, ${Math.random() * 0.5})`;                     texCtx.beginPath();                     texCtx.arc(Math.random() * size, Math.random() * size, Math.random() * 2 * scale, 0, Math.PI * 2);                     texCtx.fill();                 }                 const pattern = ctx.createPattern(textureCanvas, 'repeat');                                  ctx.fillStyle = pattern;                 ctx.strokeStyle = '#7a5230'; // Darker crust                 ctx.lineWidth = 12 * scale;                  ctx.beginPath();                 ctx.ellipse(0, 0, headWidth / 2, headHeight / 2, 0, 0, Math.PI * 2);                 ctx.fill();                 ctx.stroke();                                  // Eyes                 const eyeRadius = headWidth * 0.18;                 const eyeOffsetX = headWidth * 0.22;                 const eyeOffsetY = -headHeight * 0.1;                                  // Left eye                 ctx.fillStyle = 'white';                 ctx.strokeStyle = 'black';                 ctx.lineWidth = 6 * scale;                 ctx.beginPath();                 ctx.arc(-eyeOffsetX, eyeOffsetY, eyeRadius, 0, Math.PI * 2);                 ctx.fill();                 ctx.stroke();                                  ctx.fillStyle = 'black';                 ctx.beginPath();                 ctx.arc(-eyeOffsetX + 5 * scale, eyeOffsetY + 5 * scale, eyeRadius * 0.5, 0, Math.PI * 2);                 ctx.fill();                  // Right eye                 ctx.fillStyle = 'white';                 ctx.strokeStyle = 'black';                 ctx.lineWidth = 6 * scale;                 ctx.beginPath();                 ctx.arc(eyeOffsetX, eyeOffsetY - 10 * scale, eyeRadius * 1.1, 0, Math.PI * 2);                 ctx.fill();                 ctx.stroke();                  ctx.fillStyle = 'black';                 ctx.beginPath();                 ctx.arc(eyeOffsetX + 8 * scale, eyeOffsetY, eyeRadius * 0.55, 0, Math.PI * 2);                 ctx.fill();                  // Mouth                 ctx.strokeStyle = 'black';                 ctx.lineWidth = 8 * scale;                 ctx.lineCap = 'round';                 ctx.beginPath();                 ctx.arc(0, headHeight * 0.2, headWidth * 0.3, 0.2 * Math.PI, 0.8 * Math.PI);                 ctx.stroke();                  ctx.restore();                 return canvas.toDataURL('image/png');             }                          // Generate all required icon versions             const favicon32 = drawIcon(32);             const favicon64 = drawIcon(64);             const icon192 = drawIcon(192);             const icon512 = drawIcon(512);             const maskableIcon192 = drawIcon(192, true);             const maskableIcon512 = drawIcon(512, true);              const themeColor = '#0a192f';             const manifest = {                 name: "Najdi smažák ultimate",                 short_name: "Smažák Ult",                 start_url: ".",                 display: "standalone",                 background_color: themeColor,                 theme_color: themeColor,                 icons: [                     { src: icon192, type: "image/png", sizes: "192x192" },                     { src: icon512, type: "image/png", sizes: "512x512" },                     { src: maskableIcon192, type: "image/png", sizes: "192x192", purpose: "maskable" },                     { src: maskableIcon512, type: "image/png", sizes: "512x512", purpose: "maskable" }                 ]             };             const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });             const manifestURL = URL.createObjectURL(blob);             document.head.insertAdjacentHTML('beforeend', `                 <link rel="icon" href="${favicon32}">                 <link rel="icon" href="${favicon64}" sizes="64x64">                 <link rel="apple-touch-icon" href="${icon192}">                 <link rel="manifest" href="${manifestURL}">                 <meta name="theme-color" content="${themeColor}">                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">             `);         })();     </script>      <script src="https://cdn.tailwindcss.com"></script>     <link rel="preconnect" href="https://fonts.googleapis.com">     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>     <style>         :root {             --bg-gradient-start: #0f172a; --bg-gradient-mid: #1e293b; --bg-gradient-end: #0c4a6e;             --accent-green: #4ade80; --accent-purple: #a855f7; --accent-yellow: #facc15;             --accent-orange: #fb923c; --accent-red: #f87171;             --text-primary: #e2e8f0; --text-secondary: #94a3b8;             --glass-bg: rgba(30, 41, 59, 0.6); --glass-border: rgba(71, 85, 105, 0.25);             --glow-green: rgba(74, 222, 128, 0.4); --glow-purple: rgba(168, 85, 247, 0.4);             --glow-yellow: rgba(250, 204, 21, 0.4); --glow-red: rgba(248, 113, 113, 0.5);             --scanner-grid: rgba(74, 222, 128, 0.15);         }                  html {             height: 100%;             width: 100%;         }          body {             height: 100dvh; /* Používá dynamickou výšku viewportu */             width: 100%;             margin: 0;             padding: 0;             overflow: hidden; /* Zabrání skrolování samotného body */             font-family: 'Share Tech Mono', monospace;             background: linear-gradient(160deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);             color: var(--text-primary);             -webkit-font-smoothing: antialiased;             -moz-osx-font-smoothing: grayscale;             display: flex;             justify-content: center;             align-items: flex-start;         }                  #app-container {             width: 100%;             height: 100%;             max-width: 480px;             display: flex;             flex-direction: column;             overflow-y: auto; /* Povolí skrolování pouze pro tento kontejner */             padding: 1rem;             /* Aplikuje padding pro safe areas přímo na skrolovatelný kontejner */             padding-top: calc(1rem + env(safe-area-inset-top));             padding-bottom: calc(1rem + env(safe-area-inset-bottom));             padding-left: calc(1rem + env(safe-area-inset-left));             padding-right: calc(1rem + env(safe-area-inset-right));             box-sizing: border-box;         }          #content-wrapper {             display: flex;             flex-direction: column;             gap: 1.25rem;             width: 100%;         }          body::before {             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><rect fill="%230f172a" width="800" height="800"/><g fill-opacity="0.1"><circle fill="%231e293b" cx="400" cy="400" r="600"/><circle fill="%230c4a6e" cx="400" cy="400" r="500"/><circle fill="%230f172a" cx="400" cy="400" r="300"/><circle fill="%231e293b" cx="400" cy="400" r="200"/><circle fill="%230c4a6e" cx="400" cy="400" r="100"/></g></svg>');             opacity: 0.05; pointer-events: none; z-index: -1;         }                  h1, h2, h3 {             margin: 10px 0;             text-align: center;         }         p {             margin: 5px 0;             text-align: center;         }         button {             padding: 10px 20px;             margin: 5px;             background-color: #007bff;             color: white;             border: none;             border-radius: 5px;             cursor: pointer;             display: inline-block;         }         button:hover {             background-color: #0056b3;         }          h1.font-orbitron, h2, h3, .font-orbitron { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 8px var(--glow-green); }         h1.font-orbitron { font-size: clamp(1.5rem, 6vw, 2rem); }         .glass-panel {             background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);             border: 1px solid var(--glass-border); border-radius: clamp(12px, 4vw, 16px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);             padding: clamp(0.75rem, 3vw, 1.25rem);         }                  #scanner-container {             background: radial-gradient(circle, rgba(22, 101, 52, 0.1) 0%, rgba(15, 23, 42, 0.2) 70%);             border: 1px solid var(--glass-border);             box-shadow: 0 0 25px var(--glow-green), inset 0 0 25px rgba(15, 23, 42, 0.5);             overflow: hidden;         }         #scanner-grid {             background-color: transparent;             background-image:                 linear-gradient(rgba(74, 222, 128, 0.05) 1px, transparent 1px),                 radial-gradient(circle, transparent 25%, var(--scanner-grid) 25.5%, transparent 26%),                 radial-gradient(circle, transparent 50%, var(--scanner-grid) 50.5%, transparent 51%),                 radial-gradient(circle, transparent 75%, var(--scanner-grid) 75.5%, transparent 76%);             background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;         }                  #scanner-sweep {             background: linear-gradient(0deg, transparent 70%, rgba(74, 222, 128, 0.7) 98%, var(--accent-green) 100%);             transform-origin: bottom center;             animation: sweep 4s linear infinite;         }         @keyframes sweep { to { transform: rotate(360deg); } }                  .blip {             width: 16px; height: 16px;             background-color: var(--accent-orange);             border-radius: 50%;             box-shadow: 0 0 12px 3px var(--accent-orange);             position: absolute;             cursor: pointer;             transition: box-shadow 0.2s;             animation: pulse-blip 2.5s infinite alternate;         }         .blip:hover {             box-shadow: 0 0 20px 6px var(--accent-orange);         }         @keyframes pulse-blip { 0% { opacity: 0.6; } 100% { opacity: 1; } }          .btn { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }         .btn:hover:not(:disabled) { transform: translateY(-2px); }         .btn:active:not(:disabled) { transform: scale(0.98); }         .btn:disabled { cursor: not-allowed; filter: grayscale(80%); opacity: 0.7; }         .btn-scan { background: linear-gradient(45deg, var(--accent-green), var(--accent-purple)); box-shadow: 0 0 25px 5px var(--glow-green); font-size: clamp(0.9rem, 4vw, 1.2rem); padding: 0.75rem; }         .btn-scan:hover:not(:disabled) { box-shadow: 0 0 35px 8px var(--glow-purple); }         .btn-scan:active:not(:disabled) { box-shadow: 0 0 20px 2px var(--glow-purple); }         .btn-profile { background: linear-gradient(45deg, var(--accent-green), #22c55e); box-shadow: 0 0 20px 4px var(--glow-green); }         .btn-profile:hover:not(:disabled) { box-shadow: 0 0 30px 7px var(--glow-green); }         .threat-pill { transition: all 0.5s ease; }         .threat-low { background-color: var(--accent-green); box-shadow: 0 0 12px var(--accent-green); }         .threat-medium { background-color: var(--accent-yellow); box-shadow: 0 0 12px var(--accent-yellow); }         .threat-high { background-color: var(--accent-orange); box-shadow: 0 0 12px var(--accent-orange); }         .threat-critical { background-color: var(--accent-red); box-shadow: 0 0 15px var(--glow-red); }         .ai-modal-loader {             width: 50px; height: 50px; border: 4px solid var(--glass-border);             border-top-color: var(--accent-green); border-radius: 50%; animation: spin 1s linear infinite;         }         @keyframes spin { to { transform: rotate(360deg); } }         .flash-red { animation: red-flash 0.5s ease-out; }         @keyframes red-flash { 0%, 100% { box-shadow: none; } 50% { box-shadow: inset 0 0 100px 50px rgba(248, 113, 113, 0.6); } }         @media (prefers-reduced-motion: reduce) {           #scanner-sweep, .blip, .btn, .threat-pill, .flash-red, .ai-modal-loader { animation: none !important; transition-duration: 0.01ms !important; }         }     </style> </head> <body>     <div id="app-container">         <div id="content-wrapper">                          <h1 class="font-orbitron text-3xl text-center text-green-300">Najdi smažák ultimate</h1>              <header class="flex justify-between items-center px-2 z-10">                 <div id="threat-level-pill" class="threat-pill threat-low text-black font-bold text-xs md:text-sm py-1.5 px-4 rounded-full font-orbitron text-center">Na pohodu, jen trošku sjetý</div>             </header>              <div id="scanner-container" class="relative w-full aspect-square rounded-full flex items-center justify-center">                 <div id="scanner-grid" class="absolute w-full h-full rounded-full"></div>                 <div id="blip-container" class="absolute w-full h-full"></div>                 <div id="scanner-sweep" class="absolute w-full h-1/2 bottom-1/2"></div>                 <div class="font-orbitron text-center z-10 pointer-events-none">                     <div id="scanner-status" class="text-3xl font-bold text-green-300 transition-all" style="text-shadow: 0 0 15px var(--glow-green);">HOTOVEJ NA ŠLEH</div>                     <div id="scanner-subtext" class="text-sm text-slate-400 transition-all">Čekám na lajnu</div>                 </div>             </div>              <button id="scan-button" class="btn btn-scan w-full p-4 rounded-full text-xl font-orbitron font-bold text-black tracking-wider" aria-label="Najdi nejbližšího smážu">Najdi nejbližšího smážu</button>              <div class="glass-panel p-5">                 <div class="flex justify-center items-center mb-4">                     <button id="profile-button" class="btn btn-profile w-full max-w-xs px-3 py-1 rounded-full text-xs font-orbitron font-bold text-black">Kdo je ten smažka?</button>                 </div>                 <div class="flex items-center space-x-4 mb-4">                     <div class="w-20 h-20 rounded-full border-2 border-green-400 shadow-lg flex-shrink-0" style="box-shadow: 0 0 15px var(--glow-green);">                         <svg id="subject-avatar" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">                             <circle cx="50" cy="50" r="48" stroke="var(--accent-green)" stroke-width="2"/><path d="M50 30C58.2843 30 65 36.7157 65 45C65 53.2843 58.2843 60 50 60C41.7157 60 35 53.2843 35 45C35 36.7157 41.7157 30 50 30Z" stroke="var(--accent-green)" stroke-width="2"/><path d="M25 85C25 73.9543 36.1929 65 50 65C63.8071 65 75 73.9543 75 85" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round"/>                             <text id="subject-avatar-text" x="50" y="52" font-family="Orbitron, sans-serif" font-size="20" fill="var(--accent-green)" text-anchor="middle" dominant-baseline="middle">ŠLEHAŘ</text>                         </svg>                     </div>                     <div class="flex-1 min-w-0">                         <div id="subject-name" class="font-bold text-xl truncate">Načítání...</div>                         <div id="target-status" class="text-sm text-slate-400">Stav: Relativně v klidu</div>                         <div id="target-threat-pill" class="mt-2 threat-pill threat-low text-black text-xs font-bold py-1 px-3 rounded-full inline-block text-center">Na pohodu, jen trošku sjetý</div>                     </div>                 </div>                 <div class="grid grid-cols-2 gap-2 text-center text-xs">                     <div class="glass-panel p-2 rounded-lg"><div id="stat-bpm" class="font-bold text-base text-yellow-400">--</div><div>TEPÍK</div></div>                     <div class="glass-panel p-2 rounded-lg"><div id="stat-risk" class="font-bold text-base text-yellow-400">--%</div><div class="leading-tight">ŠANCE ŽE RUPNE ŽÍLA</div></div>                 </div>             </div>              <div class="glass-panel p-5">                 <button id="toggle-log" class="font-orbitron text-lg mb-4 w-full text-left flex justify-between items-center">                     ZÁPISKY ZE DNA                     <svg class="w-5 h-5 transition-transform" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>                 </button>                 <ul id="activity-log" class="space-y-3 text-sm max-h-40 overflow-y-auto pr-2 hidden" aria-live="polite"></ul>             </div>         </div>     </div>      <div id="ai-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="modal-title">         <div class="glass-panel w-full max-w-lg p-6 relative">             <button id="modal-close-button" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" aria-label="Zavřít okno">                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>             </button>             <h3 id="modal-title" class="font-orbitron text-xl mb-4 text-green-300"></h3>             <div id="modal-content" class="text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto"></div>             <div id="modal-loader" class="w-full flex justify-center items-center py-8 hidden"><div class="ai-modal-loader"></div></div>         </div>     </div>      <script>         document.addEventListener('DOMContentLoaded', () => {             // --- DOM Elements ---             const elements = {                 blipContainer: document.getElementById('blip-container'),                 threatPill: document.getElementById('threat-level-pill'),                 scanButton: document.getElementById('scan-button'),                 scannerStatus: document.getElementById('scanner-status'),                 scannerSubtext: document.getElementById('scanner-subtext'),                 activityLog: document.getElementById('activity-log'),                 statBpm: document.getElementById('stat-bpm'),                 statRisk: document.getElementById('stat-risk'),                 profileButton: document.getElementById('profile-button'),                 aiModal: document.getElementById('ai-modal'),                 modalTitle: document.getElementById('modal-title'),                 modalContent: document.getElementById('modal-content'),                 modalLoader: document.getElementById('modal-loader'),                 modalCloseButton: document.getElementById('modal-close-button'),                 targetThreatPill: document.getElementById('target-threat-pill'),                 subjectName: document.getElementById('subject-name'),                 subjectAvatarText: document.getElementById('subject-avatar-text'),                 toggleLog: document.getElementById('toggle-log'),                 scannerContainer: document.getElementById('scanner-container'),             };              // --- State Management ---             let state = {                 isProcessing: false,                 currentThreatIndex: 0,                 currentSubject: null,                 audioReady: false,                 subjects: [] // Will be populated later             };              // --- Sound Effects ---             const audio = {                 synths: {},                 init: function() {                     if (state.audioReady) return;                     try {                         Tone.start(); // Required for audio context in modern browsers                         this.synths.generic = new Tone.Synth({ oscillator: { type: 'fmsine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.1 } }).toDestination();                         this.synths.noise = new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.005, decay: 0.05, sustain: 0 } }).toDestination();                         this.synths.slehac = new Tone.PluckSynth({ attackNoise: 1, dampening: 4000, resonance: 0.7 }).toDestination();                         this.synths.hulic = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.1, decay: 0.3, sustain: 0.1, release: 0.2 } }).toDestination();                         this.synths.cichac = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0 } }).toDestination();                         this.synths.domingo = new Tone.MetalSynth({ frequency: 150, envelope: { attack: 0.01, decay: 0.1, release: 0.05 }, harmonicity: 3.1, modulationIndex: 16, resonance: 2000, octaves: 1.5 }).toDestination();                         this.synths.pedro = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination();                         this.synths.chemik = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.2, release: 0.1 } }).toDestination();                         this.synths.dispecer = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.1, release: 0.1 } }).toDestination();                                                  state.audioReady = true;                         document.body.removeEventListener('click', this.init.bind(this));                     } catch (e) { console.error("Could not initialize Tone.js", e); }                 },                 play: function(sound, subjectId = null) {                     if (!state.audioReady || prefersReducedMotion) return;                     const now = Tone.now();                     try {                         if (sound === 'log' && subjectId && this.synths[subjectId]) {                             const subjectSynth = this.synths[subjectId];                             if (subjectId === 'slehac') subjectSynth.triggerAttack('C5', now);                             else if (subjectId === 'hulic') subjectSynth.triggerAttackRelease('0.2', now);                             else if (subjectId === 'cichac') subjectSynth.triggerAttackRelease('0.1', now);                             else if (subjectId === 'domingo') subjectSynth.triggerAttackRelease('C4', '8n', now);                             else if (subjectId === 'pedro') {                                 subjectSynth.triggerAttackRelease('G5', '16n', now);                                 subjectSynth.triggerAttackRelease('G5', '16n', now + 0.1);                             }                             else if (subjectId === 'chemik') subjectSynth.triggerAttackRelease('A5', '16n', now);                             else if (subjectId === 'dispecer') subjectSynth.triggerAttackRelease('F4', '16n', now);                          } else {                             switch (sound) {                                 case 'click': this.synths.generic.triggerAttackRelease('C5', '8n', now); break;                                 case 'scan': this.synths.generic.triggerAttackRelease('G4', '16n', now); break;                                 case 'alert': this.synths.generic.triggerAttackRelease('A5', '8n', now); break;                                 case 'open': this.synths.generic.triggerAttackRelease('E5', '16n', now); break;                                 case 'close': this.synths.generic.triggerAttackRelease('A4', '16n', now); break;                             }                         }                     } catch (e) { console.error("Error playing sound:", e); }                 }             };             document.body.addEventListener('click', () => audio.init(), { once: true });                          // --- Data ---             state.subjects = [                 { id: 'slehac', name: 'Šlehař Delta-Piko', avatar: 'ŠLEHAŘ', profile: 'Původ: Uliční varna v Žižkově. Schopnosti: Pozná feťáka na 200 metrů. Slabiny: Bojí se holubů.', logPhrases: ['Vařím dávku, drž se', 'Šlehám vrstvičku I', 'Dealer hlásí, že zboží jede', 'Piko čistota 78 %, dobrý', 'Připravuju stříkačku', 'Váha ukazuje přesně, dneska to bude jízda.', 'Filtruju přes cigaretu, klasika.', 'Kyselina se odpařuje, cejtíš to?', 'Bacha, ať to nezcukernatí.', 'Zrcátko je čistý, lajna připravena.', 'Tep stoupá, zorničky jak talíře.', 'Právě jsem prodal starý rádio za gram.'] },                 { id: 'hulic', name: 'Hulič Zubatá Žárovka', avatar: 'HULIČ', profile: 'Původ: Skleník za panelákem. Schopnosti: Umí ubalit brko i poslepu. Slabiny: Neustále se směje vlastním vtipům.', logPhrases: ['Přepaluju sklo', 'Už to bublá, kámo', 'Mám totální červený oči', 'Kde je zapalovač?', 'Tohle je silnej model', 'Tenhle model lepí prsty, to je dobře.', 'Sháním papírky, došly mi.', 'Žárovka připravena k vaporizaci.', 'Mám vlčí hlad, objednávám pizzu.', 'Kde mám drtičku? Zase jsem ji ztratil.', 'Tohle je sativka, nebo indika? Už nevím.', 'Pouštím si chill-out mix, ať to má atmosféru.'] },                 { id: 'cichac', name: 'Čichač Trubek Omega', avatar: 'ČICHAČ', profile: 'Původ: Kanály pod hlavním nádražím. Schopnosti: Pozná značku ředidla po čichu. Slabiny: Často mluví s odpadkovými koši.', logPhrases: ['Čichám toluen z hadru', 'Tohle lepidlo je top', 'Mozek mi odchází na výlet', 'Kde je ta igelitka?', 'Všechno se točí', 'Dneska testuju novej druh ředidla.', 'Vzpomínky se rozmazávaj, barvy jsou hezčí.', 'Ten igeliťák už má díru, potřebuju novej.', 'Slyším ozvěny z kanálu, asi na mě mluví.', 'Tohle je lepší než voňavej stromeček.', 'Ztrácím pojem o čase... a o prostoru.', 'Kámo, půjč mi hadr, ten můj už je suchej.'] },                 { id: 'domingo', name: 'Domingo ze Smíchova', avatar: 'DEALER', profile: 'Původ: Lavička na Andělu. Schopnosti: Dokáže prodat cokoliv komukoliv. Kvalita zboží je... proměnlivá, ale občas má tak dobrej perník, že tě vystřelí z papučí.', logPhrases: ['Mám čerstvej matroš, chceš?', 'Dneska akce, dva za cenu jednoho.', 'Bacha, za rohem stojej fízlové.', 'Platba jen v hotovosti, kámo.', 'Tohle je čistý, přísahám.', 'Znáš Pepu? Dluží mi prachy.', 'Potřebuju si rychle vydělat na nájem.', 'Nekoukej tak nápadně, nejsme tu sami.', 'Rychle, rychle, nemám čas.'] },                 { id: 'pedro', name: 'Pedro Perníček', avatar: 'DOVOZ', profile: 'Původ: Neznámý, vždy na cestě. Schopnosti: Expresní doručení až do domu 24/7. Slabiny: Občas si splete adresu.', logPhrases: ['Jsem na cestě, čekej.', 'Už jsem za rohem, připrav prachy.', 'Máš přesně? Nemám na vrácení.', 'Dneska mám zpoždění, kolony.', 'Nová várka, silnější než minule.', 'Nezvedáš telefon, co se děje?', 'Stojím před barákem, kde jsi?', 'Dneska jen perník, nic jinýho nemám.', 'Bonusovej gram za věrnost.'] },                 { id: 'chemik', name: 'Chemik z VŠCHT', avatar: 'CHEMIK', profile: 'Původ: Laboratoř v Dejvicích. Schopnosti: Syntetizuje s přesností na mikrogram. Slabiny: Potřebuje absolutní ticho a kávu.', toastPhrases: [], logPhrases: [] },                 { id: 'dispecer', name: 'Dispečer Sítě', avatar: 'DISPEČER', profile: 'Původ: Anonymní serverovna. Schopnosti: Koordinuje logistiku celé sítě bez jediné chyby. Slabiny: Nikdy neopouští své křeslo.', toastPhrases: [], logPhrases: [] }             ];              const extraPhrases = {                 slehac: { toastPhrases: ['Čistota nad 80 %, leť.','Filtr čistý. Nezakecej.','Míchám to jak boží prst.','Teplota drží, nepřepal.','Vzorek stabilní. Plynule.','Syntéza v plným proudu.','Bez bublin, profi kvalita.','Mix jak od Michelina.','Krystal jak diamant.','Tlak drží – neměň nic.'], logPhrases: ['Zkumavka zpívá – čistý tón.','Mikro bubliny OK.','Měřák bliká zeleně.','Destilku dolít, ať to neškrábe.','Míchadlo v rytmu, drž tempo.','Povrch zrcadlo, bez puchýřů.','PH cajk, můžeme přitopit.','Vůně plastu mizí – dobrý signál.','Nálev bez kalu – paráda.','Laboratoř běží jak hodinky.','Tepelná křivka ideální.','Nic se nepřipaluje – top stav.'] },                 hulic: { toastPhrases: ['Táhne to. Drž linku.','Popel si sedá, klid.','Sklo čistý – respekt.','Seshni to na špičku.','Vlhkej kašel? Voda, kámo.','Plamen hřeje akorát.','Táhni pomalu, ať to drží.','Chuť jak první láska.','Žár rovnoměrnej.','Popelník v limitu.'], logPhrases: ['Zapal z boku, ať to nefouká.','Filtr se nechytá – luxus.','Kruh jak vinyl, stará škola.','Sídlo prachu: podložka.','Nehroť tah, nech to dýchat.','Aroma citrus-beton. Mmm.','Plamen malý, úsporný mód.','Kouř čistej jak horskej vzduch.','Žár bez praskání.','Sklo se leskne jak nový.','Pocit lehkosti – ideál.','Šluk jak z učebnice.'] },                 cichac: { toastPhrases: ['Hadr ready. Film běží.','Vdechni – nepřeháněj.','Profil drží, barvičky.','Víčko těsní, klídek.','Kanystr mlčí. Zatím.','Vůně se láme do sladka.','Vzduch má jiskru.','Film bez bublin.','Parfém továrny – deluxe.','Tlak voní stabilně.'], logPhrases: ['Vzduch se kroutí jak had.','Ticho v uších – jízda.','Stromek v autě? Ubohost.','Závan fabriky – nostalgie.','Čas gumovej. Přistávej pomalu.','Molekuly tančí ve spirále.','Nos brní, to je ono.','Filtr drží vůni pevně.','Hlavní aroma stabilní.','Lehká pachuť chemie – cajk.','Bublina času, nic se nehýbe.','Vzorek v limitu, můžeš jet.'] },                 domingo: { toastPhrases: ['Předávka v tichu.','Kamera za rohem – bacha.','Balíček nenápadnej.','Okno otevřený minutu.','Čas jsou prachy.','Stín mě kryje.','Zóna čistá.','Pohyb minimální.','Kontakt potvrzen.','Stopy vymazány.'], logPhrases: ['Koridor čistý, jdeme.','Plášť šustí – signál.','Stopy smaž, když odcházíš.','Telefon do kapsy, teď.','Zpětná kontrola: nikdo za náma.','Vchod chráněn, klid.','Nabitý plán, jedeme dál.','Bez zbytečných slov.','Otočka za roh a pryč.','Klidná zóna, žádný svědci.','Doručeno bez komplikací.','Obálka v bezpečí.'] },                 pedro: { toastPhrases: ['Brzdím. Brána?','Objížďka hotová.','Zvoním a mizím.','Expres režim.','Balík vakuuju.','Před domem za 2 minuty.','Parkuju vedle hydrantu.','Náklad drží pevně.','Bez zastávky – turbo.','Zatáčka a jsem tam.'], logPhrases: ['Byt vlevo, třetí zvonek.','Kolona na Barrandově – zpožďuju.','Parkuju u hydrantu, fofr.','V kufru to drží – žádný šust.','GPS hopsá, jsem blízko.','Světla zhasnutá, klidná příjezdovka.','Dodávka maskovaná v koloně.','Čas příjezdu přesnej na vteřinu.','Výjezd bez pozornosti okolí.','Doručeno a odjeto.','Zpoždění minimalizováno.','Trasa vyčištěná.'] },                 chemik: { toastPhrases: ['Reakce stabilní.','Vzorek pod kontrolou.','Teplota drží ±0,1°C.','PH přesně v normě.','Analýza běží.','Bezpečný roztok připraven.','Testovací série dokončena.','Přesně odměřeno.','Vzorek čistý jako slovo Boží.','Laboratoř v zelených číslech.'], logPhrases: ['Titrační křivka perfektní.','Měření přesné na mikron.','Žádná sedimentace.','Odpar 0,02 % – ideál.','Spektrum bez šumu.','Záznam uložen do protokolu.','Reaktor stabilní.','Výsledek potvrzen duplikátem.','Kalibrace 100 %. Hotovo.','Čas do další reakce: 3 min.','Žádné odchylky nenalezeny.','Parametry v normě.'] },                 dispecer: { toastPhrases: ['Trasa potvrzená.','Cíl v dosahu.','Další zastávka připravena.','Okno pro přesun otevřené.','Bezpečný koridor aktivní.','Příjezd podle plánu.','Všechny jednotky v pozici.','Synchronizace hotová.','Přesměrování bez zdržení.','Časová rezerva +2 min.'], logPhrases: ['Satelitní snímek ověřen.','Žádné překážky na trase.','Překresluju mapu pohybu.','Nový bod zájmu přidán.','Cílová zóna čistá.','Předávám souřadnice.','Radiový kontakt navázán.','Plán B připraven.','Synchronizace týmů dokončena.','Signál 100 %, spojení stabilní.','Časová osa aktualizována.','Bezpečný průchod potvrzen.'] }             };              function mergePhrases(id, extra) {                 const subject = state.subjects.find(s => s.id === id);                 if (!subject) { console.warn(`Subject with id "${id}" not found.`); return; }                 if (extra.toastPhrases) { if (!subject.toastPhrases) subject.toastPhrases = []; subject.toastPhrases = subject.toastPhrases.concat(extra.toastPhrases); }                 if (extra.logPhrases) { if (!subject.logPhrases) subject.logPhrases = []; subject.logPhrases = subject.logPhrases.concat(extra.logPhrases); }             }              for (const id in extraPhrases) { mergePhrases(id, extraPhrases[id]); }                          const threatLevels = [                 { name: 'Na pohodu, jen trošku sjetý', class: 'threat-low', level: 0 }, { name: 'Půl dávky v žíle', class: 'threat-medium', level: 1 },                 { name: 'Na šrot', class: 'threat-high', level: 2 }, { name: 'Totál Overdose', class: 'threat-critical', level: 3 }             ];             const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;              const random = (min, max) => Math.random() * (max - min) + min;             function debounce(func, delay) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); }; }              function addLogEntry(message, level = 'info', subjectId = null) {                 audio.play('log', subjectId);                 const li = document.createElement('li');                 li.className = 'flex items-center space-x-3 border-t border-slate-700/50 pt-3';                 const dotColors = { info: 'bg-green-400', warn: 'bg-yellow-400', error: 'bg-orange-400', critical: 'bg-red-400', profile: 'bg-green-400' };                 const dotShadows = { info: 'var(--glow-green)', warn: 'var(--glow-yellow)', error: 'var(--accent-orange)', critical: 'var(--glow-red)', profile: 'var(--glow-green)' };                 const time = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });                 li.innerHTML = `<span class="w-2 h-2 rounded-full ${dotColors[level]} flex-shrink-0" style="box-shadow: 0 0 5px ${dotShadows[level]}"></span><span class="text-slate-400">${time}</span><span class="flex-1">${message}</span>`;                 elements.activityLog.prepend(li);                 if (elements.activityLog.children.length > 20) { elements.activityLog.lastElementChild.remove(); }             }                          function getRandomPhrase(phraseType) {                 if (!state.currentSubject || !state.currentSubject[phraseType] || state.currentSubject[phraseType].length === 0) return "Data nenalezena...";                 const phrases = state.currentSubject[phraseType];                 return phrases[Math.floor(Math.random() * phrases.length)];             }              function displaySubject(subject) {                 if (!subject) return;                 state.currentSubject = subject;                 elements.subjectName.textContent = subject.name;                 elements.subjectAvatarText.textContent = subject.avatar;                 elements.statBpm.textContent = Math.floor(random(70, 160));                 elements.statRisk.textContent = `${Math.floor(random(10, 95))}%`;                 addLogEntry(`Profil subjektu načten: <b>${subject.name}</b>`, 'profile');             }              function updateScannerBlips() {                 elements.blipContainer.innerHTML = '';                 const styleSheet = document.createElement('style');                 document.head.appendChild(styleSheet);                  state.subjects.forEach((subject, index) => {                     const blip = document.createElement('div');                     blip.className = 'blip';                                          const animName = `move-blip-${index}`;                     const duration = random(15, 30);                     const keyframes = `                         @keyframes ${animName} {                             0% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }                             25% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }                             50% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }                             75% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }                             100% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }                         }                     `;                     if (styleSheet.sheet) {                         styleSheet.sheet.insertRule(keyframes, styleSheet.sheet.cssRules.length);                     }                      blip.style.animationName = `${animName}, pulse-blip`;                     blip.style.animationDuration = `${duration}s, 2.5s`;                     blip.style.animationIterationCount = 'infinite, infinite';                     blip.style.animationDirection = 'alternate, alternate';                      const angle = random(0, 2 * Math.PI);                     const radius = random(0.1, 0.45);                     const x = 50 + Math.cos(angle) * (radius * 100);                     const y = 50 + Math.sin(angle) * (radius * 100);                     blip.style.left = `${x}%`;                     blip.style.top = `${y}%`;                                          blip.addEventListener('click', () => {                         audio.play('click');                         displaySubject(subject);                     });                     elements.blipContainer.appendChild(blip);                 });             }              function updateThreatLevel() {                 if (state.isProcessing) return;                 state.currentThreatIndex = (state.currentThreatIndex + 1) % threatLevels.length;                 const newThreat = threatLevels[state.currentThreatIndex];                 elements.threatPill.textContent = newThreat.name;                 elements.threatPill.className = `threat-pill text-black font-bold text-xs md:text-sm py-1.5 px-4 rounded-full font-orbitron text-center ${newThreat.class}`;                 elements.targetThreatPill.textContent = newThreat.name;                 elements.targetThreatPill.className = `mt-2 threat-pill text-black text-xs font-bold py-1 px-3 rounded-full inline-block text-center ${newThreat.class}`;                 const logLevels = ['info', 'warn', 'error', 'critical'];                 addLogEntry(`⚠️ Hrozba: ${newThreat.name}`, logLevels[newThreat.level]);                 if (newThreat.level === 3) {                     audio.play('alert');                     if (!prefersReducedMotion) {                         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);                         elements.scannerContainer.classList.add('flash-red');                         setTimeout(() => elements.scannerContainer.classList.remove('flash-red'), 500);                     }                 }             }              function runScanSequence() {                 if (state.isProcessing || !state.currentSubject) return;                 state.isProcessing = true;                 elements.scanButton.disabled = true;                 let counter = 0;                 const scanStates = [                     { status: 'ANALÝZA VZORKU...', subtext: 'Filtruji nečistoty...' },                     { status: 'SEKVENCUJI DNA...', subtext: 'Hledám anomálie...' },                     { status: 'KŘÍŽOVÁ KONTAMINACE', subtext: 'Detekuji cizí látky...' },                     { status: 'VÝSLEDEK ZPRACOVÁN', subtext: 'Subjekt identifikován.' }                 ];                 addLogEntry(getRandomPhrase('logPhrases'), 'info', state.currentSubject.id);                 const scanInterval = setInterval(() => {                     audio.play('scan');                     const currentScanState = scanStates[counter];                     elements.scannerStatus.textContent = currentScanState.status;                     elements.scannerSubtext.textContent = currentScanState.subtext;                     elements.statBpm.textContent = Math.floor(random(70, 160));                     elements.statRisk.textContent = `${Math.floor(random(10, 95))}%`;                     addLogEntry(getRandomPhrase('logPhrases'), 'info', state.currentSubject.id);                     counter++;                     if (counter >= scanStates.length) {                         clearInterval(scanInterval);                         elements.scannerStatus.textContent = 'HOTOVEJ NA ŠLEH';                         elements.scannerSubtext.textContent = 'Čekám na další lajnu';                         elements.scanButton.disabled = false;                         state.isProcessing = false;                         addLogEntry('Analýza dokončena, systém ready.', 'info');                         const randomSubject = state.subjects[Math.floor(Math.random() * state.subjects.length)];                         displaySubject(randomSubject);                     }                 }, 1125);             }              function showModal(title) {                 audio.play('open');                 elements.modalTitle.textContent = title;                 elements.modalContent.innerHTML = '';                 elements.modalLoader.classList.add('hidden');                  elements.aiModal.classList.remove('hidden');                 setTimeout(() => elements.aiModal.style.opacity = '1', 10);             }              function hideModal() {                 audio.play('close');                 elements.aiModal.style.opacity = '0';                 setTimeout(() => elements.aiModal.classList.add('hidden'), 300);             }              function getSubjectProfile() {                 if (!state.currentSubject) return;                 showModal(`PROFIL: ${state.currentSubject.name.toUpperCase()}`);                 elements.modalContent.innerHTML = state.currentSubject.profile;                 addLogEntry('Profil subjektu zobrazen.', 'profile');             }              const debouncedScan = debounce(runScanSequence, 600);             elements.scanButton.addEventListener('click', () => { audio.play('click'); debouncedScan(); });                          elements.profileButton.addEventListener('click', () => { audio.play('click'); getSubjectProfile(); });              elements.modalCloseButton.addEventListener('click', hideModal);             elements.aiModal.addEventListener('click', (e) => { if(e.target === elements.aiModal) hideModal(); });             document.addEventListener('keydown', (e) => { if (e.key === "Escape") hideModal(); });              elements.toggleLog.addEventListener('click', () => {                 audio.play('click');                 const log = elements.activityLog;                 log.classList.toggle('hidden');                 const icon = elements.toggleLog.querySelector('svg');                 icon.style.transform = log.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';             });              function init() {                 displaySubject(state.subjects[0]);                 updateScannerBlips();                 addLogEntry('Bio-scanner aktivován, systém online.', 'info');                 setInterval(updateThreatLevel, 8000);             }             init();         });     </script> </body> </html> 
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Najdi smažák ultimate</title>
+    
+    <script>
+        (function() {
+            // Function to draw the new "Smažený týpek" icon
+            function drawIcon(size, isMaskable = false) {
+               const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                const scale = size / 512;
+
+                // Background
+   ctx.fillStyle = '#0a192f';
+                ctx.fillRect(0, 0, size, size);
+
+                const padding = isMaskable ? size * 0.1 : 0;
+                const drawSize = size - padding * 2;
+                const cX = size / 2;
+                const cY = size / 2;
+
+                // Head (the "smažák")
+                ctx.save();
+ctx.translate(cX, cY);
+                ctx.rotate(-10 * Math.PI / 180);
+
+                const headWidth = drawSize * 0.7;
+                const headHeight = drawSize * 0.8;
+// Breadcrumbs texture
+                const textureCanvas = document.createElement('canvas');
+textureCanvas.width = size;
+                textureCanvas.height = size;
+                const texCtx = textureCanvas.getContext('2d');
+                texCtx.fillStyle = '#d4a97a';
+// Lighter breadcrumb
+                texCtx.fillRect(0, 0, size, size);
+for (let i = 0; i < 5000 * (scale*scale); i++) {
+                    texCtx.fillStyle = `rgba(160, 110, 60, ${Math.random() * 0.5})`;
+texCtx.beginPath();
+                    texCtx.arc(Math.random() * size, Math.random() * size, Math.random() * 2 * scale, 0, Math.PI * 2);
+                    texCtx.fill();
+}
+                const pattern = ctx.createPattern(textureCanvas, 'repeat');
+ctx.fillStyle = pattern;
+                ctx.strokeStyle = '#7a5230'; // Darker crust
+                ctx.lineWidth = 12 * scale;
+ctx.beginPath();
+                ctx.ellipse(0, 0, headWidth / 2, headHeight / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+// Eyes
+                const eyeRadius = headWidth * 0.18;
+const eyeOffsetX = headWidth * 0.22;
+                const eyeOffsetY = -headHeight * 0.1;
+// Left eye
+                ctx.fillStyle = 'white';
+ctx.strokeStyle = 'black';
+                ctx.lineWidth = 6 * scale;
+                ctx.beginPath();
+                ctx.arc(-eyeOffsetX, eyeOffsetY, eyeRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(-eyeOffsetX + 5 * scale, eyeOffsetY + 5 * scale, eyeRadius * 0.5, 0, Math.PI * 2);
+ctx.fill();
+
+                // Right eye
+                ctx.fillStyle = 'white';
+ctx.strokeStyle = 'black';
+                ctx.lineWidth = 6 * scale;
+                ctx.beginPath();
+                ctx.arc(eyeOffsetX, eyeOffsetY - 10 * scale, eyeRadius * 1.1, 0, Math.PI * 2);
+ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(eyeOffsetX + 8 * scale, eyeOffsetY, eyeRadius * 0.55, 0, Math.PI * 2);
+                ctx.fill();
+// Mouth
+                ctx.strokeStyle = 'black';
+ctx.lineWidth = 8 * scale;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.arc(0, headHeight * 0.2, headWidth * 0.3, 0.2 * Math.PI, 0.8 * Math.PI);
+ctx.stroke();
+
+                ctx.restore();
+                return canvas.toDataURL('image/png');
+            }
+            
+            // Generate all required icon versions
+            const favicon32 = drawIcon(32);
+const favicon64 = drawIcon(64);
+            const icon192 = drawIcon(192);
+            const icon512 = drawIcon(512);
+            const maskableIcon192 = drawIcon(192, true);
+const maskableIcon512 = drawIcon(512, true);
+
+            const themeColor = '#0a192f';
+            const manifest = {
+                name: "Najdi smažák ultimate",
+                short_name: "Smažák Ult",
+                start_url: ".",
+                display: "standalone",
+                background_color: 
+themeColor,
+                theme_color: themeColor,
+                icons: [
+                    { src: icon192, type: "image/png", sizes: "192x192" },
+                    { src: icon512, type: "image/png", sizes: "512x512" },
+            
+{ src: maskableIcon192, type: "image/png", sizes: "192x192", purpose: "maskable" },
+                    { src: maskableIcon512, type: "image/png", sizes: "512x512", purpose: "maskable" }
+                ]
+            };
+const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            const manifestURL = URL.createObjectURL(blob);
+document.head.insertAdjacentHTML('beforeend', `
+                <link rel="icon" href="${favicon32}">
+                <link rel="icon" href="${favicon64}" sizes="64x64">
+                <link rel="apple-touch-icon" href="${icon192}">
+                <link rel="manifest" href="${manifestURL}">
+                <meta name="theme-color" content="${themeColor}">
+        
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+            `);
+})();
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        :root {
+            --bg-gradient-start: #0f172a;
+--bg-gradient-mid: #1e293b; --bg-gradient-end: #0c4a6e;
+            --accent-green: #4ade80; --accent-purple: #a855f7; --accent-yellow: #facc15;
+            --accent-orange: #fb923c; --accent-red: #f87171;
+            --text-primary: #e2e8f0; --text-secondary: #94a3b8;
+--glass-bg: rgba(30, 41, 59, 0.6); --glass-border: rgba(71, 85, 105, 0.25);
+            --glow-green: rgba(74, 222, 128, 0.4); --glow-purple: rgba(168, 85, 247, 0.4);
+--glow-yellow: rgba(250, 204, 21, 0.4); --glow-red: rgba(248, 113, 113, 0.5);
+            --scanner-grid: rgba(74, 222, 128, 0.15);
+}
+        html, body {
+            height: 100%;
+width: 100%; margin: 0; padding: 0; overflow-x: hidden;
+        }
+        body {
+            font-family: 'Share Tech Mono', monospace;
+background: linear-gradient(160deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            box-sizing: border-box;
+}
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .content {
+            flex-grow: 1;
+            max-height: 100vh;
+            overflow-y: auto;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+        #content-wrapper {
+            width: 100%;
+max-width: 480px; padding: 1rem; display: flex; flex-direction: column; gap: 1.25rem;
+}
+        .container::before {
+            content: "";
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><rect fill="%230f172a" width="800" height="800"/><g fill-opacity="0.1"><circle fill="%231e293b" cx="400" cy="400" r="600"/><circle fill="%230c4a6e" cx="400" cy="400" r="500"/><circle fill="%230f172a" cx="400" cy="400" r="300"/><circle fill="%231e293b" cx="400" cy="400" r="200"/><circle fill="%230c4a6e" cx="400" cy="400" r="100"/></g></svg>');
+opacity: 0.05; pointer-events: none; z-index: -1;
+        }
+        h1, h2, h3, .font-orbitron { font-family: 'Orbitron', sans-serif;
+text-shadow: 0 0 8px var(--glow-green); }
+        h1 { font-size: clamp(1.5rem, 6vw, 2rem);
+}
+        .glass-panel {
+            background: var(--glass-bg);
+backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: clamp(12px, 4vw, 16px);
+box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            padding: clamp(0.75rem, 3vw, 1.25rem);
+}
+        
+        #scanner-container {
+            background: radial-gradient(circle, rgba(22, 101, 52, 0.1) 0%, rgba(15, 23, 42, 0.2) 70%);
+border: 1px solid var(--glass-border);
+            box-shadow: 0 0 25px var(--glow-green), inset 0 0 25px rgba(15, 23, 42, 0.5);
+            overflow: hidden;
+}
+        #scanner-grid {
+            background-color: transparent;
+background-image:
+                linear-gradient(rgba(74, 222, 128, 0.05) 1px, transparent 1px),
+                radial-gradient(circle, transparent 25%, var(--scanner-grid) 25.5%, transparent 26%),
+                radial-gradient(circle, transparent 50%, var(--scanner-grid) 50.5%, transparent 51%),
+                radial-gradient(circle, transparent 75%, var(--scanner-grid) 75.5%, transparent 76%);
+background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+        }
+        
+        #scanner-sweep {
+            background: linear-gradient(0deg, transparent 70%, rgba(74, 222, 128, 0.7) 98%, var(--accent-green) 100%);
+transform-origin: bottom center;
+            animation: sweep 4s linear infinite;
+        }
+        @keyframes sweep { to { transform: rotate(360deg);
+} }
+        
+        .blip {
+            width: 16px;
+height: 16px;
+            background-color: var(--accent-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 12px 3px var(--accent-orange);
+            position: absolute;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+animation: pulse-blip 2.5s infinite alternate;
+        }
+        .blip:hover {
+            box-shadow: 0 0 20px 6px var(--accent-orange);
+}
+        @keyframes pulse-blip { 0% { opacity: 0.6; } 100% { opacity: 1;
+} }
+
+        .btn { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+        .btn:hover:not(:disabled) { transform: translateY(-2px);
+}
+        .btn:active:not(:disabled) { transform: scale(0.98);
+}
+        .btn:disabled { cursor: not-allowed; filter: grayscale(80%); opacity: 0.7;
+}
+        .btn-scan { background: linear-gradient(45deg, var(--accent-green), var(--accent-purple)); box-shadow: 0 0 25px 5px var(--glow-green);
+font-size: clamp(0.9rem, 4vw, 1.2rem); padding: 0.75rem; }
+        .btn-scan:hover:not(:disabled) { box-shadow: 0 0 35px 8px var(--glow-purple);
+}
+        .btn-scan:active:not(:disabled) { box-shadow: 0 0 20px 2px var(--glow-purple);
+}
+        .btn-profile { background: linear-gradient(45deg, var(--accent-green), #22c55e); box-shadow: 0 0 20px 4px var(--glow-green);
+}
+        .btn-profile:hover:not(:disabled) { box-shadow: 0 0 30px 7px var(--glow-green);
+}
+        .threat-pill { transition: all 0.5s ease;
+}
+        .threat-low { background-color: var(--accent-green); box-shadow: 0 0 12px var(--accent-green);
+}
+        .threat-medium { background-color: var(--accent-yellow); box-shadow: 0 0 12px var(--accent-yellow);
+}
+        .threat-high { background-color: var(--accent-orange); box-shadow: 0 0 12px var(--accent-orange);
+}
+        .threat-critical { background-color: var(--accent-red); box-shadow: 0 0 15px var(--glow-red);
+}
+        .ai-modal-loader {
+            width: 50px;
+height: 50px; border: 4px solid var(--glass-border);
+            border-top-color: var(--accent-green); border-radius: 50%; animation: spin 1s linear infinite;
+}
+        @keyframes spin { to { transform: rotate(360deg);
+} }
+        .flash-red { animation: red-flash 0.5s ease-out;
+}
+        @keyframes red-flash { 0%, 100% { box-shadow: none;
+} 50% { box-shadow: inset 0 0 100px 50px rgba(248, 113, 113, 0.6);
+} }
+        .fixed-bottom-element {
+            position: fixed;
+            bottom: env(safe-area-inset-bottom);
+            width: 100%;
+            background: #f8f9fa;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          #scanner-sweep, .blip, .btn, .threat-pill, .flash-red, .ai-modal-loader { animation: none !important;
+transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <div id="content-wrapper">
+                
+                <h1 class="font-orbitron text-3xl text-center text-green-300">Najdi smažák ultimate</h1>
+
+                <header class="flex justify-between items-center px-2 z-10">
+                    <div id="threat-level-pill" class="threat-pill threat-low text-black font-bold text-xs md:text-sm 
+py-1.5 px-4 rounded-full font-orbitron text-center">Na pohodu, jen trošku sjetý</div>
+                </header>
+
+                <div id="scanner-container" class="relative w-full aspect-square rounded-full flex items-center justify-center">
+                    <div id="scanner-grid" class="absolute w-full h-full rounded-full"></div>
+                    <div id="blip-container" class="absolute w-full h-full"></div>
+                    <div id="scanner-sweep" class="absolute 
+w-full h-1/2 bottom-1/2"></div>
+                    <div class="font-orbitron text-center z-10 pointer-events-none">
+                        <div id="scanner-status" class="text-3xl font-bold text-green-300 transition-all" style="text-shadow: 0 0 15px var(--glow-green);">HOTOVEJ NA ŠLEH</div>
+                        <div id="scanner-subtext" class="text-sm text-slate-400 transition-all">Čekám na lajnu</div>
+                    </div>
+        
+</div>
+
+                <button id="scan-button" class="btn btn-scan w-full p-4 rounded-full text-xl font-orbitron font-bold text-black tracking-wider" aria-label="Najdi nejbližšího smážu">Najdi nejbližšího smážu</button>
+
+                <div class="glass-panel p-5">
+                    <div class="flex justify-center items-center mb-4">
+                        <button id="profile-button" class="btn btn-profile w-full max-w-xs px-3 py-1 rounded-full text-xs 
+font-orbitron font-bold text-black">Kdo je ten smažka?</button>
+                    </div>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-20 h-20 rounded-full border-2 border-green-400 shadow-lg flex-shrink-0" style="box-shadow: 0 0 15px var(--glow-green);">
+                            <svg id="subject-avatar" viewBox="0 
+0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="48" stroke="var(--accent-green)" stroke-width="2"/><path d="M50 30C58.2843 30 65 36.7157 65 45C65 53.2843 58.2843 60 50 60C41.7157 60 35 53.2843 35 45C35 36.7157 41.7157 30 50 30Z" stroke="var(--accent-green)" stroke-width="2"/><path d="M25 85C25 73.9543 36.1929 65 50 65C63.8071 65 75 73.9543 75 85" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round"/>
+                            
+<text id="subject-avatar-text" x="50" y="52" font-family="Orbitron, sans-serif" font-size="20" fill="var(--accent-green)" text-anchor="middle" dominant-baseline="middle">ŠLEHAŘ</text>
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                         
+<div id="subject-name" class="font-bold text-xl truncate">Načítání...</div>
+                            <div id="target-status" class="text-sm text-slate-400">Stav: Relativně v klidu</div>
+                            <div id="target-threat-pill" class="mt-2 threat-pill threat-low text-black text-xs font-bold py-1 px-3 rounded-full inline-block text-center">Na pohodu, jen trošku sjetý</div>
+                        </div>
+   
+</div>
+                    <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                        <div class="glass-panel p-2 rounded-lg"><div id="stat-bpm" class="font-bold text-base text-yellow-400">--</div><div>TEPÍK</div></div>
+                        <div class="glass-panel p-2 rounded-lg"><div id="stat-risk" class="font-bold text-base text-yellow-400">--%</div><div class="leading-tight">ŠANCE ŽE RUPNE ŽÍLA</div></div>
+            
+</div>
+                </div>
+
+                <div class="glass-panel p-5">
+                    <button id="toggle-log" class="font-orbitron text-lg mb-4 w-full text-left flex justify-between items-center">
+                        ZÁPISKY ZE DNA
+                       
+<svg class="w-5 h-5 transition-transform" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <ul id="activity-log" class="space-y-3 text-sm max-h-40 overflow-y-auto pr-2 hidden" aria-live="polite"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300" role="dialog" 
+aria-modal="true" aria-labelledby="modal-title">
+        <div class="glass-panel w-full max-w-lg p-6 relative">
+            <button id="modal-close-button" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" aria-label="Zavřít okno">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 
+0-.708z"/></svg>
+            </button>
+            <h3 id="modal-title" class="font-orbitron text-xl mb-4 text-green-300"></h3>
+            <div id="modal-content" class="text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto"></div>
+            <div id="modal-loader" class="w-full flex justify-center items-center py-8 hidden"><div class="ai-modal-loader"></div></div>
+        </div>
+  
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const elements = {
+                blipContainer: document.getElementById('blip-container'),
+                threatPill: document.getElementById('threat-level-pill'),
+              
+scanButton: document.getElementById('scan-button'),
+                scannerStatus: document.getElementById('scanner-status'),
+                scannerSubtext: document.getElementById('scanner-subtext'),
+                activityLog: document.getElementById('activity-log'),
+                statBpm: document.getElementById('stat-bpm'),
+                statRisk: document.getElementById('stat-risk'),
+            
+profileButton: document.getElementById('profile-button'),
+                aiModal: document.getElementById('ai-modal'),
+                modalTitle: document.getElementById('modal-title'),
+                modalContent: document.getElementById('modal-content'),
+                modalLoader: document.getElementById('modal-loader'),
+                modalCloseButton: document.getElementById('modal-close-button'),
+          
+targetThreatPill: document.getElementById('target-threat-pill'),
+                subjectName: document.getElementById('subject-name'),
+                subjectAvatarText: document.getElementById('subject-avatar-text'),
+                toggleLog: document.getElementById('toggle-log'),
+                scannerContainer: document.getElementById('scanner-container'),
+            };
+// --- State Management ---
+            let state = {
+                isProcessing: false,
+                currentThreatIndex: 0,
+                currentSubject: null,
+                audioReady: false,
+             
+subjects: [] // Will be populated later
+            };
+// --- Sound Effects ---
+            const audio = {
+                synths: {},
+                init: function() {
+                    if (state.audioReady) return;
+try {
+                        this.synths.generic = new Tone.Synth({ oscillator: { type: 'fmsine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.1 } }).toDestination();
+this.synths.noise = new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.005, decay: 0.05, sustain: 0 } }).toDestination();
+this.synths.slehac = new Tone.PluckSynth({ attackNoise: 1, dampening: 4000, resonance: 0.7 }).toDestination();
+this.synths.hulic = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.1, decay: 0.3, sustain: 0.1, release: 0.2 } }).toDestination();
+this.synths.cichac = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0 } }).toDestination();
+this.synths.domingo = new Tone.MetalSynth({ frequency: 150, envelope: { attack: 0.01, decay: 0.1, release: 0.05 }, harmonicity: 3.1, modulationIndex: 16, resonance: 2000, octaves: 1.5 }).toDestination();
+this.synths.pedro = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination();
+// FIX: Add synths for new subjects
+                        this.synths.chemik = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.2, release: 0.1 } }).toDestination();
+this.synths.dispecer = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.005, decay: 0.1, release: 0.1 } }).toDestination();
+state.audioReady = true;
+                        document.body.removeEventListener('click', this.init.bind(this));
+                    } catch (e) { console.error("Could not initialize Tone.js", e);
+}
+                },
+                play: function(sound, subjectId = null) {
+                    if (!state.audioReady || prefersReducedMotion) return;
+const now = Tone.now();
+                    try {
+                        if (sound === 'log' && subjectId && this.synths[subjectId]) {
+                            const subjectSynth = this.synths[subjectId];
+if (subjectId === 'slehac') subjectSynth.triggerAttack('C5', now);
+                            else if (subjectId === 'hulic') subjectSynth.triggerAttackRelease('0.2', now);
+                            else if (subjectId === 'cichac') subjectSynth.triggerAttackRelease('0.1', now);
+else if (subjectId === 'domingo') subjectSynth.triggerAttackRelease('C4', '8n', now);
+                            else if (subjectId === 'pedro') {
+                                subjectSynth.triggerAttackRelease('G5', '16n', now);
+subjectSynth.triggerAttackRelease('G5', '16n', now + 0.1);
+                            }
+                            // FIX: Add sound triggers for new subjects
+                            else if (subjectId === 'chemik') subjectSynth.triggerAttackRelease('A5', '16n', now);
+else if (subjectId === 'dispecer') subjectSynth.triggerAttackRelease('F4', '16n', now);
+
+                        } else {
+                            switch (sound) {
+                                case 'click': this.synths.generic.triggerAttackRelease('C5', '8n', now);
+break;
+                                case 'scan': this.synths.generic.triggerAttackRelease('G4', '16n', now); break;
+                                case 'alert': this.synths.generic.triggerAttackRelease('A5', '8n', now); break;
+                                case 'open': this.synths.generic.triggerAttackRelease('E5', '16n', now); break;
+case 'close': this.synths.generic.triggerAttackRelease('A4', '16n', now); break;
+                            }
+                        }
+                    } catch (e) { console.error("Error playing sound:", e);
+}
+                }
+            };
+document.body.addEventListener('click', () => audio.init(), { once: true });
+            
+            // --- Data ---
+            // Initial subjects data
+            state.subjects = [
+                { id: 'slehac', name: 'Šlehař Delta-Piko', avatar: 'ŠLEHAŘ', profile: 'Původ: Uliční varna v Žižkově.
+Schopnosti: Pozná feťáka na 200 metrů. Slabiny: Bojí se holubů.', logPhrases: ['Vařím dávku, drž se', 'Šlehám vrstvičku I', 'Dealer hlásí, že zboží jede', 'Piko čistota 78 %, dobrý', 'Připravuju stříkačku', 'Váha ukazuje přesně, dneska to bude jízda.', 'Filtruju přes cigaretu, klasika.', 'Kyselina se odpařuje, cejtíš to?', 'Bacha, ať to nezcukernatí.', 'Zrcátko je čistý, lajna připravena.', 'Tep stoupá, zorničky jak talíře.', 'Právě jsem prodal starý rádio za gram.'] },
+                { id: 'hulic', name: 'Hulič Zubatá Žárovka', avatar: 'HULIČ', profile: 'Původ: Skleník za panelákem.
+Schopnosti: Umí ubalit brko i poslepu. Slabiny: Neustále se směje vlastním vtipům.', logPhrases: ['Přepaluju sklo', 'Už to bublá, kámo', 'Mám totální červený oči', 'Kde je zapalovač?', 'Tohle je silnej model', 'Tenhle model lepí prsty, to je dobře.', 'Sháním papírky, došly mi.', 'Žárovka připravena k vaporizaci.', 'Mám vlčí hlad, objednávám pizzu.', 'Kde mám drtičku?
+Zase jsem ji ztratil.', 'Tohle je sativka, nebo indika? Už nevím.', 'Pouštím si chill-out mix, ať to má atmosféru.'] },
+                { id: 'cichac', name: 'Čichač Trubek Omega', avatar: 'ČICHAČ', profile: 'Původ: Kanály pod hlavním nádražím.
+Schopnosti: Pozná značku ředidla po čichu. Slabiny: Často mluví s odpadkovými koši.', logPhrases: ['Čichám toluen z hadru', 'Tohle lepidlo je top', 'Mozek mi odchází na výlet', 'Kde je ta igelitka?', 'Všechno se točí', 'Dneska testuju novej druh ředidla.', 'Vzpomínky se rozmazávaj, barvy jsou hezčí.', 'Ten igeliťák už má díru, potřebuju novej.', 'Slyším ozvěny z kanálu, asi na mě mluví.', 'Tohle je lepší než voňavej stromeček.', 'Ztrácím pojem o čase... a o prostoru.', 'Kámo, půjč mi hadr, ten můj už je suchej.'] },
+                { id: 'domingo', 
+name: 'Domingo ze Smíchova', avatar: 'DEALER', profile: 'Původ: Lavička na Andělu. Schopnosti: Dokáže prodat cokoliv komukoliv.
+Kvalita zboží je... proměnlivá, ale občas má tak dobrej perník, že tě vystřelí z papučí.', logPhrases: ['Mám čerstvej matroš, chceš?', 'Dneska akce, dva za cenu jednoho.', 'Bacha, za rohem stojej fízlové.', 'Platba jen v hotovosti, kámo.', 'Tohle je čistý, přísahám.', 'Znáš Pepu?
+Dluží mi prachy.', 'Potřebuju si rychle vydělat na nájem.', 'Nekoukej tak nápadně, nejsme tu sami.', 'Rychle, rychle, nemám čas.'] },
+                { id: 'pedro', name: 'Pedro Perníček', avatar: 'DOVOZ', profile: 'Původ: Neznámý, vždy na cestě.
+Schopnosti: Expresní doručení až do domu 24/7. Slabiny: Občas si splete adresu.', logPhrases: ['Jsem na cestě, čekej.', 'Už jsem za rohem, připrav prachy.', 'Máš přesně?
+Nemám na vrácení.', 'Dneska mám zpoždění, kolony.', 'Nová várka, silnější než minule.', 'Nezvedáš telefon, co se děje?', 'Stojím před barákem, kde jsi?', 'Dneska jen perník, nic jinýho nemám.', 'Bonusovej gram za věrnost.'] },
+                // New subjects
+                { id: 'chemik', name: 'Chemik z VŠCHT', avatar: 'CHEMIK', profile: 'Původ: Laboratoř v Dejvicích.
+Schopnosti: Syntetizuje s přesností na mikrogram. Slabiny: Potřebuje absolutní ticho a kávu.', toastPhrases: [], logPhrases: [] },
+                { id: 'dispecer', name: 'Dispečer Sítě', avatar: 'DISPEČER', profile: 'Původ: Anonymní serverovna.
+Schopnosti: Koordinuje logistiku celé sítě bez jediné chyby. Slabiny: Nikdy neopouští své křeslo.', toastPhrases: [], logPhrases: [] }
+            ];
+// Data with new phrases to be added
+            const extraPhrases = {
+                slehac: {
+                    toastPhrases: ['Čistota nad 80 %, leť.','Filtr čistý.
+Nezakecej.','Míchám to jak boží prst.','Teplota drží, nepřepal.','Vzorek stabilní. Plynule.','Syntéza v plným proudu.','Bez bublin, profi kvalita.','Mix jak od Michelina.','Krystal jak diamant.','Tlak drží – neměň nic.'],
+                    logPhrases: ['Zkumavka zpívá – čistý tón.','Mikro bubliny OK.','Měřák bliká zeleně.','Destilku dolít, ať to neškrábe.','Míchadlo v rytmu, drž tempo.','Povrch zrcadlo, bez puchýřů.','PH cajk, můžeme přitopit.','Vůně plastu mizí – dobrý signál.','Nálev bez kalu – paráda.','Laboratoř běží jak hodinky.','Tepelná křivka ideální.','Nic se nepřipaluje – top stav.']
+               
+},
+                hulic: {
+                    toastPhrases: ['Táhne to.
+Drž linku.','Popel si sedá, klid.','Sklo čistý – respekt.','Seshni to na špičku.','Vlhkej kašel?
+Voda, kámo.','Plamen hřeje akorát.','Táhni pomalu, ať to drží.','Chuť jak první láska.','Žár rovnoměrnej.','Popelník v limitu.'],
+                    logPhrases: ['Zapal z boku, ať to nefouká.','Filtr se nechytá – luxus.','Kruh jak vinyl, stará škola.','Sídlo prachu: podložka.','Nehroť tah, nech to dýchat.','Aroma citrus-beton.
+Mmm.','Plamen malý, úsporný mód.','Kouř čistej jak horskej vzduch.','Žár bez praskání.','Sklo se leskne jak nový.','Pocit lehkosti – ideál.','Šluk jak z učebnice.']
+                },
+                cichac: {
+                    toastPhrases: ['Hadr ready.
+Film běží.','Vdechni – nepřeháněj.','Profil drží, barvičky.','Víčko těsní, klídek.','Kanystr mlčí. Zatím.','Vůně se láme do sladka.','Vzduch má jiskru.','Film bez bublin.','Parfém továrny – deluxe.','Tlak voní stabilně.'],
+                    logPhrases: ['Vzduch se kroutí jak had.','Ticho v uších – jízda.','Stromek v autě?
+Ubohost.','Závan fabriky – nostalgie.','Čas gumovej. Přistávej pomalu.','Molekuly tančí ve spirále.','Nos brní, to je ono.','Filtr drží vůni pevně.','Hlavní aroma stabilní.','Lehká pachuť chemie – cajk.','Bublina času, nic se nehýbe.','Vzorek v limitu, můžeš jet.']
+                },
+                domingo: {
+                    toastPhrases: ['Předávka v tichu.','Kamera za rohem – bacha.','Balíček nenápadnej.','Okno otevřený minutu.','Čas jsou prachy.','Stín mě kryje.','Zóna čistá.','Pohyb minimální.','Kontakt 
+potvrzen.','Stopy vymazány.'],
+                    logPhrases: ['Koridor čistý, jdeme.','Plášť šustí – signál.','Stopy smaž, když odcházíš.','Telefon do kapsy, teď.','Zpětná kontrola: nikdo za náma.','Vchod chráněn, klid.','Nabitý plán, jedeme dál.','Bez zbytečných slov.','Otočka za roh a pryč.','Klidná zóna, žádný svědci.','Doručeno bez komplikací.','Obálka v bezpečí.']
+                },
+                pedro: {
+            
+toastPhrases: ['Brzdím.
+Brána?','Objížďka hotová.','Zvoním a mizím.','Expres režim.','Balík vakuuju.','Před domem za 2 minuty.','Parkuju vedle hydrantu.','Náklad drží pevně.','Bez zastávky – turbo.','Zatáčka a jsem tam.'],
+                    logPhrases: ['Byt vlevo, třetí zvonek.','Kolona na Barrandově – zpožďuju.','Parkuju u hydrantu, fofr.','V kufru to drží – žádný šust.','GPS hopsá, jsem blízko.','Světla zhasnutá, klidná příjezdovka.','Dodávka maskovaná v koloně.','Čas příjezdu přesnej na vteřinu.','Výjezd bez pozornosti okolí.','Doručeno a odjeto.','Zpoždění minimalizováno.','Trasa vyčištěná.']
+                },
+        
+chemik: {
+                    toastPhrases: ['Reakce stabilní.','Vzorek pod kontrolou.','Teplota drží ±0,1°C.','PH přesně v normě.','Analýza běží.','Bezpečný roztok připraven.','Testovací série dokončena.','Přesně odměřeno.','Vzorek čistý jako slovo Boží.','Laboratoř v zelených číslech.'],
+                    logPhrases: ['Titrační křivka perfektní.','Měření přesné na mikron.','Žádná sedimentace.','Odpar 0,02 % – ideál.','Spektrum bez šumu.','Záznam uložen do protokolu.','Reaktor stabilní.','Výsledek potvrzen duplikátem.','Kalibrace 100 %.
+Hotovo.','Čas do další reakce: 3 min.','Žádné odchylky nenalezeny.','Parametry v normě.']
+                },
+                dispecer: {
+                    toastPhrases: ['Trasa potvrzená.','Cíl v dosahu.','Další zastávka připravena.','Okno pro přesun otevřené.','Bezpečný koridor aktivní.','Příjezd podle plánu.','Všechny jednotky v pozici.','Synchronizace hotová.','Přesměrování bez zdržení.','Časová rezerva +2 min.'],
+                
+logPhrases: ['Satelitní snímek ověřen.','Žádné překážky na trase.','Překresluju mapu pohybu.','Nový bod zájmu přidán.','Cílová zóna čistá.','Předávám souřadnice.','Radiový kontakt navázán.','Plán B připraven.','Synchronizace týmů dokončena.','Signál 100 %, spojení stabilní.','Časová osa aktualizována.','Bezpečný průchod potvrzen.']
+                }
+            };
+// Helper function to merge phrases
+            function mergePhrases(id, extra) {
+                const subject = state.subjects.find(s => s.id === id);
+if (!subject) {
+                    console.warn(`Subject with id "${id}" not found.`);
+return;
+                }
+                if (extra.toastPhrases) {
+                    if (!subject.toastPhrases) subject.toastPhrases = [];
+subject.toastPhrases = subject.toastPhrases.concat(extra.toastPhrases);
+                }
+                if (extra.logPhrases) {
+                    if (!subject.logPhrases) subject.logPhrases = [];
+subject.logPhrases = subject.logPhrases.concat(extra.logPhrases);
+                }
+            }
+
+            // Merge all the new phrases into the state
+            for (const id in extraPhrases) {
+                mergePhrases(id, extraPhrases[id]);
+}
+            
+            const threatLevels = [
+                { name: 'Na pohodu, jen trošku sjetý', class: 'threat-low', level: 0 }, { name: 'Půl dávky v žíle', class: 'threat-medium', level: 1 },
+                { name: 'Na šrot', class: 'threat-high', level: 2 }, { name: 'Totál Overdose', class: 'threat-critical', level: 3 }
+  
+];
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const random = (min, max) => Math.random() * (max - min) + min;
+            function debounce(func, delay) { let timeout;
+return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), delay); };
+}
+
+            function addLogEntry(message, level = 'info', subjectId = null) {
+                audio.play('log', subjectId);
+const li = document.createElement('li');
+                li.className = 'flex items-center space-x-3 border-t border-slate-700/50 pt-3';
+const dotColors = { info: 'bg-green-400', warn: 'bg-yellow-400', error: 'bg-orange-400', critical: 'bg-red-400', profile: 'bg-green-400' };
+const dotShadows = { info: 'var(--glow-green)', warn: 'var(--glow-yellow)', error: 'var(--accent-orange)', critical: 'var(--glow-red)', profile: 'var(--glow-green)' };
+const time = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+li.innerHTML = `<span class="w-2 h-2 rounded-full ${dotColors[level]} flex-shrink-0" style="box-shadow: 0 0 5px ${dotShadows[level]}"></span><span class="text-slate-400">${time}</span><span class="flex-1">${message}</span>`;
+                elements.activityLog.prepend(li);
+if (elements.activityLog.children.length > 20) { elements.activityLog.lastElementChild.remove(); }
+            }
+            
+            function getRandomPhrase(phraseType) {
+                if (!state.currentSubject || !state.currentSubject[phraseType] || state.currentSubject[phraseType].length === 0) return "Data nenalezena...";
+const phrases = state.currentSubject[phraseType];
+                return phrases[Math.floor(Math.random() * phrases.length)];
+            }
+
+            function displaySubject(subject) {
+                if (!subject) return;
+state.currentSubject = subject;
+                elements.subjectName.textContent = subject.name;
+                elements.subjectAvatarText.textContent = subject.avatar;
+                elements.statBpm.textContent = Math.floor(random(70, 160));
+                elements.statRisk.textContent = `${Math.floor(random(10, 95))}%`;
+addLogEntry(`Profil subjektu načten: <b>${subject.name}</b>`, 'profile');
+            }
+
+            function updateScannerBlips() {
+                elements.blipContainer.innerHTML = '';
+const styleSheet = document.createElement('style');
+                document.head.appendChild(styleSheet);
+
+                state.subjects.forEach((subject, index) => {
+                    const blip = document.createElement('div');
+                    blip.className = 'blip';
+                    
+                    const animName = `move-blip-${index}`;
+    
+const duration = random(15, 30);
+                    const keyframes = `
+                        @keyframes ${animName} {
+                            0% { transform: 
+translate(${random(-50, 50)}px, ${random(-50, 50)}px); }
+                            25% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }
+                            50% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }
+                          
+75% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }
+                            100% { transform: translate(${random(-50, 50)}px, ${random(-50, 50)}px); }
+                        }
+                    `;
+            
+if (styleSheet.sheet) {
+                        styleSheet.sheet.insertRule(keyframes, styleSheet.sheet.cssRules.length);
+}
+
+                    blip.style.animationName = `${animName}, pulse-blip`;
+blip.style.animationDuration = `${duration}s, 2.5s`;
+                    blip.style.animationIterationCount = 'infinite, infinite';
+                    blip.style.animationDirection = 'alternate, alternate';
+
+                    const angle = random(0, 2 * Math.PI);
+const radius = random(0.1, 0.45);
+                    const x = 50 + Math.cos(angle) * (radius * 100);
+const y = 50 + Math.sin(angle) * (radius * 100);
+                    blip.style.left = `${x}%`;
+                    blip.style.top = `${y}%`;
+blip.addEventListener('click', () => {
+                        audio.play('click');
+                        displaySubject(subject);
+                    });
+elements.blipContainer.appendChild(blip);
+                });
+            }
+
+            function updateThreatLevel() {
+                if (state.isProcessing) return;
+state.currentThreatIndex = (state.currentThreatIndex + 1) % threatLevels.length;
+                const newThreat = threatLevels[state.currentThreatIndex];
+                elements.threatPill.textContent = newThreat.name;
+elements.threatPill.className = `threat-pill text-black font-bold text-xs md:text-sm py-1.5 px-4 rounded-full font-orbitron text-center ${newThreat.class}`;
+                elements.targetThreatPill.textContent = newThreat.name;
+elements.targetThreatPill.className = `mt-2 threat-pill text-black text-xs font-bold py-1 px-3 rounded-full inline-block text-center ${newThreat.class}`;
+                const logLevels = ['info', 'warn', 'error', 'critical'];
+addLogEntry(`⚠️ Hrozba: ${newThreat.name}`, logLevels[newThreat.level]);
+                if (newThreat.level === 3) {
+                    audio.play('alert');
+if (!prefersReducedMotion) {
+                        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+elements.scannerContainer.classList.add('flash-red');
+                        setTimeout(() => elements.scannerContainer.classList.remove('flash-red'), 500);
+                    }
+                }
+            }
+
+            function runScanSequence() {
+                if (state.isProcessing || !state.currentSubject) return;
+state.isProcessing = true;
+                elements.scanButton.disabled = true;
+                let counter = 0;
+const scanStates = [
+                    { status: 'ANALÝZA VZORKU...', subtext: 'Filtruji nečistoty...' },
+                    { status: 'SEKVENCUJI DNA...', subtext: 'Hledám anomálie...' },
+                    { status: 'KŘÍŽOVÁ KONTAMINACE', subtext: 'Detekuji cizí látky...' },
+               
+{ status: 'VÝSLEDEK ZPRACOVÁN', subtext: 'Subjekt identifikován.'
+}
+                ];
+addLogEntry(getRandomPhrase('logPhrases'), 'info', state.currentSubject.id);
+const scanInterval = setInterval(() => {
+                    audio.play('scan');
+                    const currentScanState = scanStates[counter];
+                    elements.scannerStatus.textContent = currentScanState.status;
+                    elements.scannerSubtext.textContent = currentScanState.subtext;
+        
+elements.statBpm.textContent = Math.floor(random(70, 160));
+                    elements.statRisk.textContent = `${Math.floor(random(10, 95))}%`;
+                    addLogEntry(getRandomPhrase('logPhrases'), 'info', state.currentSubject.id);
+                    counter++;
+                    
+if (counter >= scanStates.length) {
+                        clearInterval(scanInterval);
+                        elements.scannerStatus.textContent = 'HOTOVEJ NA ŠLEH';
+                        elements.scannerSubtext.textContent = 'Čekám na další lajnu';
+               
+elements.scanButton.disabled = false;
+                        state.isProcessing = false;
+                        addLogEntry('Analýza dokončena, systém ready.', 'info');
+const randomSubject = state.subjects[Math.floor(Math.random() * state.subjects.length)];
+                        displaySubject(randomSubject);
+                    }
+                }, 1125);
+}
+
+            function showModal(title) {
+                audio.play('open');
+elements.modalTitle.textContent = title;
+                elements.modalContent.innerHTML = '';
+                elements.modalLoader.classList.add('hidden'); 
+                elements.aiModal.classList.remove('hidden');
+                setTimeout(() => elements.aiModal.style.opacity = '1', 10);
+}
+
+            function hideModal() {
+                audio.play('close');
+elements.aiModal.style.opacity = '0';
+                setTimeout(() => elements.aiModal.classList.add('hidden'), 300);
+            }
+
+            function getSubjectProfile() {
+                if (!state.currentSubject) return;
+showModal(`PROFIL: ${state.currentSubject.name.toUpperCase()}`);
+                elements.modalContent.innerHTML = state.currentSubject.profile;
+                addLogEntry('Profil subjektu zobrazen.', 'profile');
+            }
+
+            const debouncedScan = debounce(runScanSequence, 600);
+elements.scanButton.addEventListener('click', () => { audio.play('click'); debouncedScan(); });
+            
+            elements.profileButton.addEventListener('click', () => { audio.play('click'); getSubjectProfile(); });
+
+            elements.modalCloseButton.addEventListener('click', hideModal);
+elements.aiModal.addEventListener('click', (e) => { if(e.target === elements.aiModal) hideModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === "Escape") hideModal(); });
+elements.toggleLog.addEventListener('click', () => {
+                audio.play('click');
+                const log = elements.activityLog;
+                log.classList.toggle('hidden');
+                const icon = elements.toggleLog.querySelector('svg');
+                icon.style.transform = log.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+     
+});
+
+            function init() {
+                displaySubject(state.subjects[0]);
+updateScannerBlips();
+                addLogEntry('Bio-scanner aktivován, systém online.', 'info');
+                setInterval(updateThreatLevel, 8000);
+            }
+            init();
+});
+    </script>
+</body>
+</html>
